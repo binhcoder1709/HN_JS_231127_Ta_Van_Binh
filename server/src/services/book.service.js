@@ -14,20 +14,50 @@ const findAll = async () => {
 };
 
 const createOne = async (data) => {
-  return new Promise((resolve, reject) => {
-    const { id, book_name, description, price } = data;
-    const sql =
-      "INSERT INTO books (id, book_name, description, price) VALUES (?, ?, ?, ?); INSERT INTO book_author (id)";
-    const values = [id, book_name, description, price];
-    connection.query(sql, values, (err, result) => {
-      if (err) {
-        console.error(err);
-        reject(err);
-      }
-      resolve(result);
+    return new Promise((resolve, reject) => {
+      const { id, book_name, description, price, author } = data;
+      console.log(data);
+      const sql1 = "INSERT INTO books (id, book_name, description, price) VALUES (?, ?, ?, ?)";
+      const sql2 = "INSERT INTO book_author (book_id, author_id) VALUES (?, ?)";
+      const values1 = [id, book_name, description, price];
+      const values2 = [id, author];
+      connection.beginTransaction((err) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        }
+        
+        connection.query(sql1, values1, (err, result1) => {
+          if (err) {
+            connection.rollback(() => {
+              console.error(err);
+              reject(err);
+            });
+          }
+  
+          connection.query(sql2, values2, (err, result2) => {
+            if (err) {
+              connection.rollback(() => {
+                console.error(err);
+                reject(err);
+              });
+            }
+  
+            connection.commit((err) => {
+              if (err) {
+                connection.rollback(() => {
+                  console.error(err);
+                  reject(err);
+                });
+              }
+              resolve({ result1, result2 });
+            });
+          });
+        });
+      });
     });
-  });
-};
+  };
+  
 // tìm kiếm 1 bản ghi bằng id
 const findById = async (id) => {
   try {
@@ -62,7 +92,7 @@ const updateById = async (data, id) => {
             console.error(err);
             reject(err);
           }
-          resolve(result[0]);
+          resolve(result);
         }
       );
     });

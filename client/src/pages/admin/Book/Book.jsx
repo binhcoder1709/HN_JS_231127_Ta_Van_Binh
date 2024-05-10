@@ -1,6 +1,6 @@
 import { faEye, faTrashCan, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, message } from "antd";
+import { Button, Select, message } from "antd";
 import React, { useEffect, useState } from "react";
 import TableData from "../../../components/TableData";
 import { Input, Textarea } from "@nextui-org/react";
@@ -12,14 +12,16 @@ import BookEditForm from "../../../components/BookEditForm";
 
 export default function Book() {
   const [displayForm, setDisplayForm] = useState(false);
-  const [displayEditForm, setDisplayEditForm] = useState(true);
+  const [displayEditForm, setDisplayEditForm] = useState(false);
   const [data, setData] = useState([]);
+  const [authorData, setAuthorData] = useState([]);
   const [dataById, setDataById] = useState({});
   const formik = useFormik({
     initialValues: {
       bookName: "",
       description: "",
       price: null,
+      author: "", // Add author field to initialValues
     },
     validationSchema: Yup.object({
       bookName: Yup.string()
@@ -29,6 +31,7 @@ export default function Book() {
         .required("Vui lòng nhập mô tả")
         .max(200, "Mô tả không được lớn hơn 200 ký tự"),
       price: Yup.number().required("Vui lòng nhập đơn giá"),
+      author: Yup.string().required("Vui lòng chọn tác giả"), // Add author validation
     }),
     onSubmit: async (values, { resetForm }) => {
       const data = {
@@ -36,8 +39,8 @@ export default function Book() {
         book_name: values.bookName,
         description: values.description,
         price: values.price,
+        author: values.author, // Include author in data object
       };
-
       try {
         const response = await baseUrl.post("book", data);
         if (response.status == 201) {
@@ -47,6 +50,7 @@ export default function Book() {
           fetchData();
         }
       } catch (error) {
+        console.log(error);
         message.error("Thêm sản phẩm thất bại");
       }
     },
@@ -59,8 +63,19 @@ export default function Book() {
       console.error(error);
     }
   };
+  const fetchAuthorData = async () => {
+    try {
+      const response = await baseUrl.get("author");
+      setAuthorData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     fetchData();
+  }, []);
+  useEffect(() => {
+    fetchAuthorData();
   }, []);
   const handleEdit = async (id) => {
     try {
@@ -176,6 +191,21 @@ export default function Book() {
                 value={formik.values.price}
               />
             </div>
+            <div className="flex flex-col">
+              <label htmlFor="author">Tác giả</label>
+              <Select
+                value={formik.values.author}
+                onChange={(value) => formik.setFieldValue("author", value)}
+              >
+                {authorData.map((item) => (
+                  <Select.Option value={item.id}>
+                    {item.author_name}
+                  </Select.Option>
+                ))}
+
+                {/* Add more options as needed */}
+              </Select>
+            </div>
             <div>
               <label htmlFor="description">Mô tả</label>
               <Textarea
@@ -197,7 +227,10 @@ export default function Book() {
       )}
       {displayEditForm && (
         <>
-          <BookEditForm setDisplayEditForm={setDisplayEditForm} data={dataById}/>
+          <BookEditForm
+            setDisplayEditForm={setDisplayEditForm}
+            data={dataById}
+          />
         </>
       )}
     </>

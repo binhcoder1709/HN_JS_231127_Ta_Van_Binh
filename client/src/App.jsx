@@ -7,6 +7,7 @@ import Login from "./pages/user/Login/Login";
 import AdminRouter from "./routes/AdminRouter";
 import HomeAdmin from "./pages/admin/Home/HomeAdmin";
 import Book from "./pages/admin/Book/Book";
+import Author from "./pages/admin/Author/Author";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/admin" element={<AdminRouter />}>
           <Route index element={<HomeAdmin />} />
           <Route path="/admin/products" element={<Book />} />
+          <Route path="/admin/authors" element={<Author />} />
         </Route>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
