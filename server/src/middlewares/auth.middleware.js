@@ -19,9 +19,7 @@ const validationUser = async (req, res, next) => {
   if (
     !data.user_name ||
     !data.email ||
-    !data.password ||
-    !data.phone_number ||
-    !data.address
+    !data.password
   ) {
     return res.status(400).json({ message: "Missing Data Fields!" });
   }

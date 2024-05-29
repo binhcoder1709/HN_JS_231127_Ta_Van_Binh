@@ -7,18 +7,32 @@ import baseUrl from "../../../api/axios";
 
 const Home = () => {
   const [data, setData] = useState([]);
+
   const fetchData = async () => {
     try {
       // const userData = await useSelector(selectData);
-      const userData = await baseUrl.get("users");
+      const userData = await baseUrl.get("book");
       setData(userData.data);
     } catch (error) {
       console.error(error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  const formatCurrency = (value) => {
+    if (typeof value !== "number") {
+      return "N/A";
+    }
+  
+    // Chuyển đổi giá trị thành chuỗi và thêm dấu phẩy phân cách hàng nghìn
+    const formattedValue = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    // Định dạng chuỗi thành tiền tệ Việt Nam
+    return formattedValue + "đ";
+  };
 
   // Khai báo các cột của bảng
   const columns = [
@@ -28,49 +42,25 @@ const Home = () => {
     },
     {
       title: "ID",
-      dataIndex: "user_ID",
-      key: "user_ID",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: "Tên sinh viên",
-      render: (text, record) => (
-        <>
-          <span>
-            {record.first_name} {record.last_name}
-          </span>
-        </>
-      ),
+      title: "Tên sách",
+      dataIndex: "book_name",
+      key: "book_name",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Đơn giá",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => formatCurrency(price),
     },
-    {
-      title: "Số điện thoại",
-      dataIndex: "phone_number",
-      key: "phone_number",
-    },
-    {
-      title: "Ngày sinh",
-      dataIndex: "birthday",
-      key: "birthday",
-    },
-    {
-      title: "Tình trạng",
-      render: (text, record) => (
-        <>
-          <span>
-            {record.role === 1 ? "Đang hoạt động" : record.role == 0 ? "Ngừng hoạt động" : "Quản trị viên"}
-          </span>
-        </>
-      ),
-    },
+    
   ];
 
   return (
     <>
-      {/* Bảng hiển thị danh sách sinh viên */}
       <div>
         <TableData dataSource={data} columns={columns} />
       </div>

@@ -51,9 +51,10 @@ const findById = async (id) => {
 // xoá 1 bản ghi theo id
 const deleteById = async (id) => {
   try {
-    const sql = "DELETE FROM authors WHERE id = ?";
-    const result = await new Promise((resolve, reject) => {
-      connection.query(sql, [id], (err, result) => {
+    // Xóa các bản ghi liên quan trong bảng `book_author` trước
+    const deleteBookAuthorSql = "DELETE FROM book_author WHERE author_id = ?";
+    await new Promise((resolve, reject) => {
+      connection.query(deleteBookAuthorSql, [id], (err, result) => {
         if (err) {
           console.error(err);
           reject(err);
@@ -61,10 +62,24 @@ const deleteById = async (id) => {
         resolve(result);
       });
     });
+
+    // Sau đó xóa tác giả trong bảng `authors`
+    const deleteAuthorSql = "DELETE FROM authors WHERE id = ?";
+    const result = await new Promise((resolve, reject) => {
+      connection.query(deleteAuthorSql, [id], (err, result) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        }
+        resolve(result);
+      });
+    });
+
     return result;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
+
 export { findAll, createOne, findById, deleteById };

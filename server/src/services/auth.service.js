@@ -3,19 +3,10 @@ import connection from "../configs/mysql.config.js";
 // đăng ký dữ liệu
 const createOne = (data) => {
   return new Promise((resolve, reject) => {
-    const { id, user_name, email, password, phone_number, address, role } =
-      data;
+    const { id, user_name, email, password, role } = data;
     const sql =
-      "INSERT INTO users (id, user_name, email, password, phone_number, address, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    const values = [
-      id,
-      user_name,
-      email,
-      password,
-      phone_number,
-      address,
-      role,
-    ];
+      "INSERT INTO users (id, user_name, email, password, role) VALUES (?, ?, ?, ?, ?)";
+    const values = [id, user_name, email, password, role];
     connection.query(sql, values, (err, result) => {
       if (err) {
         console.error(err);

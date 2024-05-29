@@ -5,6 +5,7 @@ const addUser = async (req, res) => {
   const data = req.body;
   try {
     const response = await createOne(data);
+    console.log(response);
     res.status(201).json(response);
   } catch (error) {
     console.error(error);

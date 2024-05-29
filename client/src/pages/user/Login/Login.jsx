@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
-  document.title = "Đăng nhập sinh viên";
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -62,16 +61,7 @@ const Login = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center">
-        {/* logo */}
-        <div>
-          <img
-            src="https://navigates.vn/wp-content/uploads/2023/06/logo-dai-hoc-cong-nghe-dong-a.jpg"
-            className="w-[400px] h-[200px]"
-            alt=""
-          />
-        </div>
-
+      <div className="flex justify-center w-full h-screen items-center">
         {/* form đăng nhập */}
         <div>
           <form
