@@ -37,16 +37,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="w-full h-[60px] bg-white p-2 border-b-2 border-gray-400 flex items-center justify-around">
-        {/* logo */}
-        <div className="h-full">
-          <img
-            src="https://static.topcv.vn/company_logos/1ZBhWcwHtuLHOmyChDBbc01TlA8wUVQT_1639127653____512fb0dfe6913e2f14bfba6896eec801.jpg"
-            alt=""
-            className="h-full"
-          />
-        </div>
-
+      <header className="w-full h-[60px] bg-white p-2 border-b-2 px-10 border-gray-400 flex items-center justify-end">
         <div>
           <Dropdown>
             <DropdownTrigger>
